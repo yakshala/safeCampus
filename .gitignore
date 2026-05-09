@@ -43,6 +43,7 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+<<<<<<< HEAD
 
 node_modules/
 .env
@@ -52,3 +53,5 @@ __pycache__/
 google-services.json
 firebase.json
 serviceAccountKey.json
+=======
+>>>>>>> 7bceaa8e605061b16ed1bde03c350e359f6863a0
