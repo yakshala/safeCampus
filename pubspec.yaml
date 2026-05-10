@@ -50,6 +50,8 @@ flutter:
   assets:
     - assets/loginpage.png
     - assets/splash_screen.jpeg
+    - assets/
+
   fonts:
     - family: SF Pro Display
       fonts:
