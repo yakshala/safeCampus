@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+
 import '../../features/splash/splash_screen.dart';
 import '../../features/auth/login_screen.dart';
 import '../../features/auth/signup_screen.dart';
@@ -10,10 +11,11 @@ import '../../features/alerts/alerts_screen.dart';
 import '../../features/map/map_screen.dart';
 import '../../features/admin/admin_dashboard_screen.dart';
 import '../../features/reports/reports_screen.dart';
-/// App router configuration with custom page transitions
+
 final appRouterProvider = Provider<GoRouter>((ref) {
   return GoRouter(
     initialLocation: '/',
+
     routes: [
       // Splash Screen
       GoRoute(
@@ -22,13 +24,17 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         pageBuilder: (context, state) => CustomTransitionPage(
           key: state.pageKey,
           child: const SplashScreen(),
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            return FadeTransition(opacity: animation, child: child);
+          transitionsBuilder:
+              (context, animation, secondaryAnimation, child) {
+            return FadeTransition(
+              opacity: animation,
+              child: child,
+            );
           },
         ),
       ),
-      
-      // Auth Routes
+
+      // Login
       GoRoute(
         path: '/login',
         name: 'login',
@@ -38,6 +44,8 @@ final appRouterProvider = Provider<GoRouter>((ref) {
           transitionsBuilder: _slideTransition,
         ),
       ),
+
+      // Signup
       GoRoute(
         path: '/signup',
         name: 'signup',
@@ -47,8 +55,8 @@ final appRouterProvider = Provider<GoRouter>((ref) {
           transitionsBuilder: _slideTransition,
         ),
       ),
-      
-      // Main App Routes
+
+      // Dashboard
       GoRoute(
         path: '/dashboard',
         name: 'dashboard',
@@ -58,6 +66,8 @@ final appRouterProvider = Provider<GoRouter>((ref) {
           transitionsBuilder: _fadeSlideTransition,
         ),
       ),
+
+      // Monitoring
       GoRoute(
         path: '/monitoring',
         name: 'monitoring',
@@ -67,6 +77,8 @@ final appRouterProvider = Provider<GoRouter>((ref) {
           transitionsBuilder: _slideTransition,
         ),
       ),
+
+      // Alerts
       GoRoute(
         path: '/alerts',
         name: 'alerts',
@@ -76,6 +88,8 @@ final appRouterProvider = Provider<GoRouter>((ref) {
           transitionsBuilder: _slideTransition,
         ),
       ),
+
+      // Map
       GoRoute(
         path: '/map',
         name: 'map',
@@ -85,6 +99,8 @@ final appRouterProvider = Provider<GoRouter>((ref) {
           transitionsBuilder: _slideTransition,
         ),
       ),
+
+      // Admin
       GoRoute(
         path: '/admin',
         name: 'admin',
@@ -94,6 +110,8 @@ final appRouterProvider = Provider<GoRouter>((ref) {
           transitionsBuilder: _slideTransition,
         ),
       ),
+
+      // Reports
       GoRoute(
         path: '/reports',
         name: 'reports',
@@ -106,7 +124,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
     ],
   );
 });
-// Custom slide transition from right
+
 Widget _slideTransition(
   BuildContext context,
   Animation<double> animation,
@@ -117,14 +135,16 @@ Widget _slideTransition(
     position: Tween<Offset>(
       begin: const Offset(1, 0),
       end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: animation,
-      curve: Curves.easeOutCubic,
-    )),
+    ).animate(
+      CurvedAnimation(
+        parent: animation,
+        curve: Curves.easeOutCubic,
+      ),
+    ),
     child: child,
   );
 }
-// Combined fade and slide transition for main screens
+
 Widget _fadeSlideTransition(
   BuildContext context,
   Animation<double> animation,
@@ -140,10 +160,12 @@ Widget _fadeSlideTransition(
       position: Tween<Offset>(
         begin: const Offset(0, 0.05),
         end: Offset.zero,
-      ).animate(CurvedAnimation(
-        parent: animation,
-        curve: Curves.easeOutCubic,
-      )),
+      ).animate(
+        CurvedAnimation(
+          parent: animation,
+          curve: Curves.easeOutCubic,
+        ),
+      ),
       child: child,
     ),
   );
