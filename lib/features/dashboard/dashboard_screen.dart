@@ -61,13 +61,16 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
               // Scrollable content
               Expanded(
                 child: SingleChildScrollView(
-                  padding: const EdgeInsets.fromLTRB(20, 8, 20, 100),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Quick stats grid
-                      _buildStatsGrid(stats),
-                      
+                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 100),
+                 child: Column(
+  crossAxisAlignment: CrossAxisAlignment.start,
+  children: [
+    _buildCameraConnectionCard(),
+
+    const SizedBox(height: 24),
+
+    // Quick stats grid
+    _buildStatsGrid(stats),
                       const SizedBox(height: 28),
                       
                       // Quick actions
@@ -96,6 +99,211 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
       extendBody: true,
     );
   }
+  Widget _buildCameraConnectionCard() {
+  return GlassCard(
+    padding: const EdgeInsets.all(18),
+    child: Column(
+      children: [
+        Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(14),
+              decoration: BoxDecoration(
+                color: AppColors.online.withOpacity(0.15),
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: const Icon(
+                Iconsax.video,
+                color: AppColors.online,
+                size: 28,
+              ),
+            )
+                .animate(
+                  onPlay: (controller) => controller.repeat(),
+                )
+                .shimmer(duration: 1800.ms),
+
+            const SizedBox(width: 16),
+
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Live Camera Connected',
+                    style: AppTypography.titleSmall,
+                  ),
+
+                  const SizedBox(height: 6),
+
+                  Text(
+                    'Main Gate CCTV',
+                    style: AppTypography.bodyMedium.copyWith(
+                      color: AppColors.textSecondaryDark,
+                    ),
+                  ),
+
+                  const SizedBox(height: 4),
+
+                  Text(
+                    'RTSP • 192.168.1.25:8554',
+                    style: AppTypography.bodySmall.copyWith(
+                      color: AppColors.textTertiaryDark,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 12,
+                vertical: 8,
+              ),
+              decoration: BoxDecoration(
+                color: AppColors.online.withOpacity(0.15),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    width: 8,
+                    height: 8,
+                    decoration: const BoxDecoration(
+                      color: AppColors.online,
+                      shape: BoxShape.circle,
+                    ),
+                  )
+                      .animate(
+                        onPlay: (controller) =>
+                            controller.repeat(),
+                      )
+                      .fade(
+                        begin: 0.2,
+                        end: 1,
+                        duration: 800.ms,
+                      ),
+
+                  const SizedBox(width: 6),
+
+                  Text(
+                    'LIVE',
+                    style: AppTypography.labelSmall.copyWith(
+                      color: AppColors.online,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+
+        const SizedBox(height: 18),
+
+        Row(
+          children: [
+            Expanded(
+              child: _buildConnectionMetric(
+                'Latency',
+                '42ms',
+                AppColors.accent,
+                Iconsax.flash_1,
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: _buildConnectionMetric(
+                'FPS',
+                '24',
+                AppColors.online,
+                Iconsax.activity,
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: _buildConnectionMetric(
+                'Signal',
+                'Strong',
+                AppColors.alertMedium,
+                Iconsax.wifi,
+              ),
+            ),
+          ],
+        ),
+
+        const SizedBox(height: 18),
+
+        SizedBox(
+          width: double.infinity,
+          child: ElevatedButton.icon(
+            onPressed: () => context.push('/monitoring'),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.accent.withOpacity(0.15),
+              foregroundColor: AppColors.accent,
+              elevation: 0,
+              padding: const EdgeInsets.symmetric(
+                vertical: 14,
+              ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(14),
+              ),
+            ),
+            icon: const Icon(Iconsax.play),
+            label: const Text('Open Live Feed'),
+          ),
+        ),
+      ],
+    ),
+  )
+      .animate()
+      .fadeIn(delay: 100.ms)
+      .slideY(begin: -0.05, end: 0);
+}
+Widget _buildConnectionMetric(
+  String label,
+  String value,
+  Color color,
+  IconData icon,
+) {
+  return Container(
+    padding: const EdgeInsets.symmetric(
+      vertical: 12,
+      horizontal: 10,
+    ),
+    decoration: BoxDecoration(
+      color: color.withOpacity(0.08),
+      borderRadius: BorderRadius.circular(14),
+    ),
+    child: Column(
+      children: [
+        Icon(
+          icon,
+          color: color,
+          size: 18,
+        ),
+
+        const SizedBox(height: 8),
+
+        Text(
+          value,
+          style: AppTypography.labelMedium.copyWith(
+            color: color,
+          ),
+        ),
+
+        const SizedBox(height: 4),
+
+        Text(
+          label,
+          style: AppTypography.labelSmall.copyWith(
+            color: AppColors.textTertiaryDark,
+          ),
+        ),
+      ],
+    ),
+  );
+}
   Widget _buildStatsGrid(Map<String, dynamic> stats) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
