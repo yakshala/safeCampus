@@ -48,6 +48,8 @@ flutter:
   uses-material-design: true
 
   assets:
+    - assets/loginpage.png
+    - assets/splash_screen.jpeg
     - assets/
 
   fonts:

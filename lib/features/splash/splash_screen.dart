@@ -1,123 +1,156 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
-import '../../core/theme/app_colors.dart';
-import '../../core/theme/app_typography.dart';
-/// Premium splash screen with animated logo reveal
-/// Creates a strong first impression for security application
+
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
+
   @override
   State<SplashScreen> createState() => _SplashScreenState();
 }
-class _SplashScreenState extends State<SplashScreen> {
+
+class _SplashScreenState extends State<SplashScreen>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  late Animation<double> _scaleAnimation;
+  late Animation<double> _fadeAnimation;
+  late Animation<double> _rotationAnimation;
+
   @override
   void initState() {
     super.initState();
-    // Navigate to login after animation completes
-    Future.delayed(const Duration(milliseconds: 2500), () {
+
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 2),
+    );
+
+    _scaleAnimation = Tween<double>(
+      begin: 0.6,
+      end: 1.0,
+    ).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: Curves.elasticOut,
+      ),
+    );
+
+    _fadeAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: Curves.easeIn,
+      ),
+    );
+
+    _rotationAnimation = Tween<double>(
+      begin: -0.1,
+      end: 0.0,
+    ).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: Curves.easeOut,
+      ),
+    );
+
+    _controller.forward();
+
+    Timer(const Duration(seconds: 3), () {
       if (mounted) {
         context.go('/login');
       }
     });
   }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              AppColors.primaryDark,
-              AppColors.surfaceDark,
-            ],
+    return Stack(
+      children: [
+        Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                Colors.black,
+                Colors.black,
+              ],
+            ),
           ),
-        ),
-        child: Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // Animated shield icon
-              Container(
-                width: 100,
-                height: 100,
-                decoration: BoxDecoration(
-                  gradient: AppColors.accentGradient,
-                  borderRadius: BorderRadius.circular(24),
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.accent.withOpacity(0.4),
-                      blurRadius: 30,
-                      offset: const Offset(0, 10),
+          child: Scaffold(
+            backgroundColor: Colors.transparent,
+            body: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  FadeTransition(
+                    opacity: _fadeAnimation,
+                    child: AnimatedBuilder(
+                      animation: _controller,
+                      builder: (context, child) {
+                        return Transform.rotate(
+                          angle: _rotationAnimation.value,
+                          child: Transform.scale(
+                            scale: _scaleAnimation.value,
+                            child: child,
+                          ),
+                        );
+                      },
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(52),
+                        child: Image.asset(
+                          'assets/splash_screen.jpeg',
+                          width: 200,
+                          height: 200,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
                     ),
-                  ],
-                ),
-                child: const Icon(
-                  Icons.shield_outlined,
-                  size: 50,
-                  color: AppColors.primaryDark,
-                ),
-              )
-              .animate()
-              .scale(
-                duration: 600.ms,
-                curve: Curves.easeOutBack,
-              )
-              .then(delay: 200.ms)
-              .shimmer(
-                duration: 1200.ms,
-                color: Colors.white.withOpacity(0.3),
-              ),
-              
-              const SizedBox(height: 32),
-              
-              // App name
-              Text(
-                'SafeCampus',
-                style: AppTypography.displaySmall.copyWith(
-                  color: AppColors.textPrimaryDark,
-                  fontWeight: FontWeight.w700,
-                ),
-              )
-              .animate()
-              .fadeIn(delay: 400.ms, duration: 500.ms)
-              .slideY(begin: 0.3, end: 0),
-              
-              const SizedBox(height: 8),
-              
-              // Tagline
-              Text(
-                'AI-Powered Security',
-                style: AppTypography.bodyLarge.copyWith(
-                  color: AppColors.accent,
-                  letterSpacing: 2,
-                ),
-              )
-              .animate()
-              .fadeIn(delay: 600.ms, duration: 500.ms)
-              .slideY(begin: 0.3, end: 0),
-              
-              const SizedBox(height: 80),
-              
-              // Loading indicator
-              SizedBox(
-                width: 40,
-                height: 40,
-                child: CircularProgressIndicator(
-                  strokeWidth: 3,
-                  valueColor: AlwaysStoppedAnimation<Color>(
-                    AppColors.accent.withOpacity(0.7),
                   ),
-                ),
-              )
-              .animate()
-              .fadeIn(delay: 800.ms, duration: 400.ms),
-            ],
+
+                  const SizedBox(height: 20),
+
+                  FadeTransition(
+                    opacity: _fadeAnimation,
+                    child: const Text(
+                      '',
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                        letterSpacing: 1.2,
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 8),
+
+                  FadeTransition(
+                    opacity: _fadeAnimation,
+                    child: const Text(
+                      '',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.white70,
+                        letterSpacing: 1.0,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
         ),
-      ),
+      ],
     );
   }
 }
